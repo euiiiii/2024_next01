@@ -8,7 +8,8 @@ import Link from 'next/link';
 
 function Page(props) {
     const [list, setList] = useState([]);
-    const API_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?brand=maybelline";
+    // const API_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?brand=maybelline";
+    const API_URL = "/makeup/v1/products.json?brand=maybelline";
     const getData = () => {
         axios.get(
             API_URL

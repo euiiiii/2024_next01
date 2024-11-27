@@ -6,7 +6,8 @@ import axios from "axios";
 async function Page({ params }) {
   const param = await params;
   const id = params.id;
-  const API_URL = `https://makeup-api.herokuapp.com/api/v1/products/${id}.json`;
+  // const API_URL = `http://makeup-api.herokuapp.com/api/v1/products/${id}.json`;
+  const API_URL = `/makeup/v1/products/${id}.json`;
 
   try {
     const response = await axios.get(API_URL);
@@ -15,7 +16,7 @@ async function Page({ params }) {
     return <Item item={item} />;
   } catch (error) {
     console.error("error:", error);
-    return <div>Errora.</div>;
+    return <div>Error</div>;
   }
 }
 
