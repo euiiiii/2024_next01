@@ -6,8 +6,8 @@ import axios from "axios";
 async function Page({ params }) {
   const param = await params;
   const id = params.id;
-  // const API_URL = `http://makeup-api.herokuapp.com/api/v1/products/${id}.json`;
-  const API_URL = `/makeup/v1/products/${id}.json`;
+  const API_URL = `http://makeup-api.herokuapp.com/api/v1/products/${id}.json`;
+  // const API_URL = `/makeup/v1/products/${id}.json`;
 
   try {
     const response = await axios.get(API_URL);

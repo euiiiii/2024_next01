@@ -7,8 +7,8 @@ import Link from 'next/link';
 
 function Page(props) {
     const [list, setList] = useState([]);
-    // const API_URL = "http://localhost:8080/api/guestbook/list";
-    const API_URL = "/guestbook/list";
+    const API_URL = "http://localhost:8080/api/guestbook/list";
+    // const API_URL = "/guestbook/list";
     const getData = () => {
         axios.get(
             API_URL
