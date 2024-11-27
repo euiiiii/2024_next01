@@ -4,6 +4,7 @@ import './itemList.css';
 import { Divider, Grid2 } from '@mui/material';
 import axios from 'axios';
 import Image from 'next/image';
+import Link from 'next/link';
 
 function Page(props) {
     const [list, setList] = useState([]);
@@ -12,8 +13,12 @@ function Page(props) {
         axios.get(
             API_URL
         ).then(res => {
-            console.log(res.data)
-            setList(res.data);
+            // console.log(res.data)
+            // setList(res.data);
+
+            // 상위 12개 데이터만 추출 => 페이징 기법을 이렇게 써도 된다 하셨음 그럼 map으로 돌려서 하면 되나?
+            // 현재 페이지 계산해서 하면 된다 하셨음 오...
+            setList(res.data.slice(0,12));
         }).catch(
             console.log("에러 발생")
         )
@@ -30,13 +35,16 @@ function Page(props) {
             {/* 그리드의 기본 개수 12개 */}
             <Grid2 container spacing={2}>
                 {list.map(k=>{
-                    // 전체 12개에서 3개를 차지한다.(한 줄에 4개)
+                    // size={{xs:3}} 전체 12개에서 3개를 차지한다.(한 줄에 4개)
                     return <Grid2 item xs={3} key={k.id} size={{xs:3}} >
                         {/* next 내에 있는 <Image /> 말고 html 안에 있는 <img> 사용해야 한다. */}
-                        <img src={k.image_link} alt="" className='img_item' />
-                        <strong>{k.name}</strong>
-                        <span className='txt_info'>{k.category}&nbsp;&nbsp;{k.product_type}</span>
-                        <strong className='num_price'>{k.price}</strong>
+                        {/* 동적 라우팅 */}
+                        <Link href={'/view/' + k.id}>
+                            <img src={k.image_link} alt="" className='img_item' />
+                            <strong>{k.name}</strong>
+                            <span className='txt_info'>{k.category}&nbsp;&nbsp;{k.product_type}</span>
+                            <strong className='num_price'>{k.price}</strong>
+                        </Link>
                     </Grid2>
                 })}
             </Grid2>
