@@ -1,33 +1,52 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './itemList.css';
 import { Divider, Grid2 } from '@mui/material';
 import axios from 'axios';
-import Image from 'next/image';
 import Link from 'next/link';
 
 function Page(props) {
+    const MAKEUP_API_BASE_URL = process.env.NEXT_PUBLIC_MAKEUP_API_BASE_URL;
     const [list, setList] = useState([]);
-    // const API_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?brand=maybelline";
-    const API_URL = "/makeup/v1/products.json?brand=maybelline";
-    const getData = () => {
-        axios.get(
-            API_URL
-        ).then(res => {
-            // console.log(res.data)
-            // setList(res.data);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    //const API_URL = "http://makeup-api.herokuapp.com/api/v1/products.json?brand=maybelline";
+    const API_URL = `${MAKEUP_API_BASE_URL}/v1/products.json?brand=maybelline`; // 프록시 된 API URL
 
-            // 상위 12개 데이터만 추출 => 페이징 기법을 이렇게 써도 된다 하셨음 그럼 map으로 돌려서 하면 되나?
-            // 현재 페이지 계산해서 하면 된다 하셨음 오...
-            setList(res.data.slice(0,12));
-        }).catch(
-            console.log("에러 발생")
-        )
+    // 데이터 가져오기
+    const getData = async () => {
+        try {
+            setLoading(true); // 로딩 상태 시작
+            const response = await axios.get(API_URL);
+            setList(response.data.slice(0,12));
+        } catch (err) {
+            console.error("Error fetching data: ", err);
+            setError(err.message);
+        } finally {
+            setLoading(false); // 로딩 상태 확인
+        }
     }
+
     // 최초 한 번만 실행
     useEffect(()=>{
         getData();
     }, [])
+
+    // 로딩 중
+    if (loading) {
+        return <div style={{textAlign: "center", padding: "20px"}}>Loading...</div>;
+    }
+  
+    // 에러 발생 시
+    if (error) {
+        return(
+        <div style={{textAlign: "center", padding: "20px", color: "red"}}>
+            <h2>Error:</h2>
+            <p>{error}</p>
+        </div>
+        );
+    }
+
     return (
         <div style={{width:"80%", margin:"auto", padding:"20px"}}>
             <h2>베스트 상품</h2>
