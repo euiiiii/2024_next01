@@ -7,6 +7,14 @@ import React, { useState } from 'react';
 function Page(props) {
   const LOCAL_API_BASE_URL = process.env.NEXT_PUBLIC_LOCAL_API_BASE_URL;
   const API_URL = `${LOCAL_API_BASE_URL}/members/join`;
+  /*
+    useRouter
+    - 다른 페이지로 갈 수 있도록 도와주는 hook
+    - 현재 페이지의 URL, 경로, 쿼리 파라미터 등과 같은 정보에 쉽게 엑세스 가능
+    - 이를 통해 페이지 내에서 필요한 정보를 동적으로 가져와 사용 가능
+    - 동적 라우팅, 쿼리 파라미터 처리, 페이지 리다이렉션 가능
+    Ex) 로그인 성공 시, 메인 페이지로 가듯이 그런 느낌!
+  */
   const router = useRouter(); // useRouter 초기화
   // 텍스트필드 초기화
   const initUvo = {

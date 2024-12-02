@@ -6,6 +6,7 @@ import img01 from "/public/images/coffee-blue.jpg"
 
 
 // 자식 컴포넌트는 필수이지만 부모 컴포넌트는 선택이다.
+import ItemList from './itemList/page.jsx'
 export default function Home() {
   // 해당 내용은 부모 컴포넌트의 props => {children} 에 삽입된다.
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       {/* 너비, 높이는 선택 사항 */}
       {/* <p><Image src={img01} alt="" /></p> */}
       {/* <p><Image src={img01} width={50} height={50} alt="" /></p> */}
+      <ItemList />
     </>
   );
 };

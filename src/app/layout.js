@@ -55,7 +55,7 @@ export default function RootLayout({ children }) {
           </Stack>
         </nav>
         <hr />
-        {children}
+        { children }
         <hr />
         <ul>
           {/* href="/create" 이건 폴더 이름이 된다. */}
