@@ -1,3 +1,4 @@
+"use client"
 // props가 있는 애가 부모
 // layout.js는 선택이다. (RootLayout  제외)
 // layout이 필요없는 간단한 페이지에서는 생략 가능
@@ -7,8 +8,21 @@ import "./globals.css";
 
 // 페이지 전체에 공통 구조를 렌더링 할 때 사용
 
+// zustand store 호출
+import useAuthStore from '../../store/authStore';
+import { Button, Stack } from "@mui/material";
+
 // 부모 컴포넌트
 export default function RootLayout({ children }) {
+  // zustand 상태 가져오기
+  const {isAuthenticated, user, logout} = useAuthStore();
+  // console.log("token: ", token);
+  const handleLogout = () => {
+    // zustand에 있는 함수 호출
+    logout();
+    alert("로그아웃 되었습니다.");
+  }
+
   return (
     <html lang="en">
       <body style={{textAlign: "center"}}>
@@ -18,17 +32,28 @@ export default function RootLayout({ children }) {
         {/* <footer style={{marginTop: "50px"}}>공통 푸터</footer> */}
 
         <h1><Link href="/">WEB</Link></h1>
-        <ol>
+        <nav>
+          <Stack direction='row' spacing={2} justifyContent='center'>
           {/* read 뒤 1,2,3 은 [id] */}
-          <li><Link href="/read/1">HTML</Link></li>
-          <li><Link href="/read/2">CSS</Link></li>
-          <li><Link href="/read/3">JS</Link></li>
-          <li><Link href="/gallery">image</Link></li>
-          <li><Link href="/itemList">ItemList(외부 서버)</Link></li>
-          <li><Link href="/guestbookList">guestbook(Spring 내부 서버)</Link></li>
-          <li><Link href="/login">로그인</Link></li>
-          <li><Link href="/join">회원가입</Link></li>
-        </ol>
+          <Link href="/read/1">HTML</Link>
+          <Link href="/read/2">CSS</Link>
+          <Link href="/read/3">JS</Link>
+          <Link href="/gallery">image</Link>
+          <Link href="/itemList">ItemList(외부 서버)</Link>
+          <Link href="/guestbookList">guestbook(Spring 내부 서버)</Link>
+          {isAuthenticated ? (
+            <>
+              <span style={{fontSize: "16px"}}><b>{user.m_id}님 환영합니다.</b></span>
+              <Button variant="contained"><a onClick={handleLogout}>로그아웃(Spring 서버)</a></Button>
+            </>
+          ) : (
+            <>
+              <Link href="/login">로그인(Spring 서버)</Link>
+              <Link href="/join">회원가입(Spring 서버)</Link>
+            </>
+          ) }
+          </Stack>
+        </nav>
         <hr />
         {children}
         <hr />
