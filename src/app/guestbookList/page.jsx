@@ -1,31 +1,51 @@
 "use client"
-import React, { useEffect, useState } from 'react';
-import './guestbookList.css';
-import axios from 'axios';
+
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import axios from 'axios';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import './guestBookList.css';
 
 function Page(props) {
+    const LOCAL_API_BASE_URL = process.env.NEXT_PUBLIC_LOCAL_API_BASE_URL
     const [list, setList] = useState([]);
-    const API_URL = "http://localhost:8080/api/guestbook/list";
-    // const API_URL = "/guestbook/list";
-    const getData = () => {
-        axios.get(
-            API_URL
-        ).then(res => {
-            setList(res.data);
-            console.log(res.data);
-        }).catch(
-            console.log("에러 발생")
-        )
-    }
+    const [loading, setLoading] = useState(true); // 로딩 상태
+    const [error, setError] = useState(null); // 에러 상태
+    // const API_URL = "http://localhost:8080/api/guestbook/list";
+    const API_URL = `${LOCAL_API_BASE_URL}/guestbook/list`;
+
+    // 데이터 가져오기
+    const getData = async () => {
+        try {
+            setLoading(true); // 로딩 상태 시작
+            const response = await axios.get(API_URL); // axios를 사용한 API 호출
+            const data = response.data.data;
+            // console.log(res.data)
+            setList(data);
+        } catch (err) {
+            console.error("Error fetching data:", err);
+            setError(err.message);
+        } finally {
+            setLoading(false); // 로딩 상태 종료
+        }
+    };
+
     // 최초 한 번만 실행
-    useEffect(()=>{
+    useEffect(() => {
         getData();
     }, []);
 
+    // 로딩 중 화면
+    if (loading) {
+        return <div style={{ textAlign: "center", padding: "20px" }}>Loading...</div>;
+    }
+    // 에러 발생 시 화면
+    if (error) {
+        return <div style={{ textAlign: "center", padding: "20px", color: "red" }}>Error: {error}</div>;
+    }
+    // 로딩 완료 후 화면
     return (
-        <div>
+        <>
             <h2 className="title">GuestBookList</h2>
             <TableContainer component={Paper} className="table-container">
                 <Table className="custom-table">
@@ -36,18 +56,25 @@ function Page(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {list.map((item) => (
+                        {/* 조건 렌더링 */}
+                        {list.length === 0 ? 
+                            <>
+                                <TableRow>
+                                    <TableCell colSpan={2} style={{textAlign: "center"}}>등록된 정보가 없습니다.</TableCell>
+                                </TableRow>
+                            </>
+                        : list.map((item) => (
                             <TableRow key={item.gb_idx}>
                                 <TableCell className="table-cell">{item.gb_name}</TableCell>
                                 <TableCell className="table-cell">
-                                    <Link href={`/guestbookDetails/${item.gb_idx}`}>{item.gb_subject}</Link>
+                                    <Link href={`/guestBookDetails/${item.gb_idx}`}>{item.gb_subject}</Link>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-        </div>
+        </>
     );
 }
 

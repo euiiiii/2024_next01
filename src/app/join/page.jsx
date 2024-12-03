@@ -16,7 +16,7 @@ function Page(props) {
     Ex) 로그인 성공 시, 메인 페이지로 가듯이 그런 느낌!
   */
   const router = useRouter(); // useRouter 초기화
-  // 텍스트필드 초기화
+  // 텍스트필드 초기화 => 회원가입 안 됐을 경우 텍스트필드 값 초기화 시킴
   const initUvo = {
     m_id:"",
     m_pw:"",
@@ -41,8 +41,8 @@ function Page(props) {
     // axios => 정보 보낼 때 사용
     // axios.post: post로 보냄
     axios.post(API_URL, uvo)
-      .then(data => {
-        if (data.data.success) {
+      .then(data => { // data 대신 response를 써도 된다. 대부분 response를 쓴다.
+        if (data.data.success) { // response code: 200
           console.log(data.message);
           alert(data.data.message);
           // 성공했을 때 login 페이지로 페이지 이동
