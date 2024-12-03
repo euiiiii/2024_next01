@@ -40,7 +40,7 @@ export default function RootLayout({ children }) {
           <Link href="/read/3">JS</Link>
           <Link href="/gallery">image</Link>
           <Link href="/itemList">ItemList(외부 서버)</Link>
-          <Link href="/guestbookList">guestbook(Spring 내부 서버)</Link>
+          <Link href="/guestBookList">guestbook(Spring 내부 서버)</Link>
           {isAuthenticated ? (
             <>
               <span style={{fontSize: "16px"}}><b>{user.m_id}님 환영합니다.</b></span>
