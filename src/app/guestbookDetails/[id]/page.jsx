@@ -16,6 +16,7 @@ function Page({ params }) {
     const { isAuthenticated, token } = useAuthStore();       // 로그인 상태
     const router = useRouter();
 
+    // 데이터를 비동기로 가져오기
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -28,7 +29,7 @@ function Page({ params }) {
                 const response = await axios.get(API_URL);
                 const data = response.data;
                 if (data.success) {
-                    setItem(data.data);
+                    setItem(data.data); // 데이터를 setItem에 저장
                 } else {
                     setError("Failed to fetch product data.");
                 }
@@ -40,23 +41,24 @@ function Page({ params }) {
             }
         };
 
-        fetchData();
+        fetchData(); // fetchData는 비동기 함수를 선언하여 API에서 데이터를 가져오는 역할
     }, [params, LOCAL_API_BASE_URL]);
 
     // delete
     const handleDelete = async () => {
-        // 버트를 항상 활성화 하면 
+        // 버튼을 항상 활성화 하면 
         // if (!isAuthenticated) {
         //     alert("로그인이 필요합니다.")
         //     router.push("/login");
         // }
 
+        // 선생님은 버튼 비활성화 방법을 추천하심
         // 상세보기 성공했을 때 데이터 item에 넣었다.
         const API_URL = `${LOCAL_API_BASE_URL}/guestbook/delete/${item.gb_idx}`;
         try {
-            const response = await axios.get(API_URL, {
+            const response = await axios.get(API_URL, { // GetMapping으로 API_URL 접속? 무튼...
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}` // 로그인했을 때 삭제가 가능하니까 token 정보가 필요해서 헤더에 token 정보를 넣는다.
                 }
             });
             if (response.data.success) {

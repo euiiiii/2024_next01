@@ -23,7 +23,8 @@ function Page({ params }) {
                 const API_URL = `${LOCAL_API_BASE_URL}/guestbook/detail/${gb_idx}`;
 
                 // 데이터 가져오기
-                const response = await axios.get(API_URL);
+                // 수정이나 삽입은 put이나 form-data를 써야한다. => put은 수정할 때 쓴다고 생각하면 된다.
+                const response = await axios.get(API_URL); 
                 const data = response.data;
                 if (data.success) {
                     setOriginalData(data.data);
@@ -71,7 +72,8 @@ function Page({ params }) {
         const { gb_idx } = await Promise.resolve(params);
         const API_URL = `${LOCAL_API_BASE_URL}/guestbook/update/${gb_idx}`;
         try {
-            const response = await axios.get(API_URL, editData, {
+            // 수정이나 삽입은 put이나 form-data를 써야한다. => put은 수정할 때 쓴다고 생각하면 된다.
+            const response = await axios.put(API_URL, editData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -121,7 +123,7 @@ function Page({ params }) {
                         <TableRow>
                             <TableCell className="table-cell">CONTENT</TableCell>
                             <TableCell className="table-cell">
-                                <TextField type='text' name="gb_content" value={editData.gb_content} onChange={changItem} />
+                                <TextField type='text' multiline rows={4} name="gb_content" value={editData.gb_content} onChange={changItem} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
