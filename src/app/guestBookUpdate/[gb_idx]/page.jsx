@@ -14,22 +14,23 @@ function Page({ params }) {
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState(null);     // 에러 상태
 
-    // 상세보기 한번 더하기 
+    // 상세보기 한 번 더하기 => 렌더링을 하기 위해서 useEffect를 사용
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true); // 로딩 시작
-                const { gb_idx } = await Promise.resolve(params);
+                const { gb_idx } = await Promise.resolve(params); 
                 const API_URL = `${LOCAL_API_BASE_URL}/guestbook/detail/${gb_idx}`;
 
                 // 데이터 가져오기
                 // 수정이나 삽입은 put이나 form-data를 써야한다. => put은 수정할 때 쓴다고 생각하면 된다.
-                const response = await axios.get(API_URL); 
+                const response = await axios.get(API_URL); // axios를 사용한 GET 방식으로 API 호출
+                // response.data: DataVO를 포장한 것
+                // response.data.data: DataVO 안에 있는 data
                 const data = response.data;
                 if (data.success) {
                     setOriginalData(data.data);
                     setEditData(data.data);
-
                 } else {
                     setError("Failed to fetch product data.");
                 }
@@ -75,6 +76,8 @@ function Page({ params }) {
             // 수정이나 삽입은 put이나 form-data를 써야한다. => put은 수정할 때 쓴다고 생각하면 된다.
             const response = await axios.put(API_URL, editData, {
                 headers: {
+                    // 로그인했을 때 삭제가 가능하니까 token 정보가 필요해서 헤더에 token 정보를 넣는다.
+                    // 무분별한 데이터 접근을 막기 위해 headers에 token을 추가하여 token 값이 있어야만 데이터 접근 가능
                     Authorization: `Bearer ${token}`
                 }
             });
@@ -140,7 +143,7 @@ function Page({ params }) {
                 <Button variant='contained'
                     color='primary'
                     onClick={handleUpdate}
-                    disabled={!isAuthenticated || !isChanged()} // 로그인 및 변경 여부 확인
+                    disabled={!isAuthenticated || !isChanged()} // 로그인 상태 및 value 값 변경 여부 확인
                 >수정</Button>
             </div>
         </>

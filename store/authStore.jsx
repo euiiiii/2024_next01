@@ -1,12 +1,35 @@
-import { create } from 'zustand'
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 // 권한이 필요한 role들은 여기에서 관리(?)
-const useAuthStore = create((set) => ({
-    user : null, // 사용자 정보
-    token : null, // JWT 토큰
-    isAuthenticated : false, // 로그인 여부
-    login : (user, token) => set({user, token, isAuthenticated : true}),   // 로그인 성공 시 처리 => 위에 변수 받아서 setter로 변경
-    logout : () => set({user: null, token: null, isAuthenticated: false}), // 로그인 실패 시 처리
-}));
+const useAuthStore = create(
+    persist(
+        (set) => ({
+            user: null, // 사용자 정보
+            token: null, // JWT 토큰
+            isAuthenticated: false, // 로그인 여부
+            // 로그인 처리
+            login: (user, token) => {
+                set ({user, token, isAuthenticated: true});
+            },
+            // 로그아웃 처리
+            logout: () => {
+                set({user: null, token: null, isAuthenticated: false});
+
+                // 추가로 로컬 스토리지에서 삭제 (보안 강화)
+                localStorage.removeItem("auth-storage");
+            },
+            // 상태를 초기화하는 기능 추가
+            reset: () => {
+                set({user: null, token: null, isAuthenticated: false});
+            },
+        }),
+
+        {
+            name: "auth-storage", // 로컬스토리지 키 이름
+            getStorage: () => localStorage, // 로컬 스토리지 이용
+        }
+    )
+);
 
 export default useAuthStore;

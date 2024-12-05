@@ -19,6 +19,7 @@ function Page(props) {
         gb_subject: '', 
         gb_content: '', 
         gb_email: '', 
+        gb_pw: '',
         file: null
     });
 
@@ -44,6 +45,7 @@ function Page(props) {
         data.append("gb_subject", formData.gb_subject);
         data.append("gb_content", formData.gb_content);
         data.append("gb_email", formData.gb_email);
+        data.append("gb_pw", formData.gb_pw);
         if (formData.file) {
             data.append("file", formData.file);
         }
@@ -51,6 +53,8 @@ function Page(props) {
         try {
             const response = await axios.post(API_URL, data, { // 갈 주소와 데이터
                 headers: {
+                    // 로그인했을 때 삭제가 가능하니까 token 정보가 필요해서 헤더에 token 정보를 넣는다.
+                    // 무분별한 데이터 접근을 막기 위해 headers에 token을 추가하여 token 값이 있어야만 데이터 접근 가능
                     Authorization: `Bearer ${token}`, // 헤더에 로그인 토큰 값 넣어서 보내기
                     "Content-Type" : "multipart/form-data"
                 }
@@ -66,12 +70,13 @@ function Page(props) {
         }
     }
 
-    const isFormBVaild = 
+    const isFormVaild = 
         isAuthenticated && 
         formData.gb_name.trim() !== "" && 
         formData.gb_subject.trim() !== "" && 
         formData.gb_content.trim() !== "" &&
-        formData.gb_email.trim() !== "" ;
+        formData.gb_email.trim() !== "" &&
+        formData.gb_pw.trim() !== "" ;
 
     return (
         <div style={{padding: "20px"}}>
@@ -106,6 +111,14 @@ function Page(props) {
                 fullWidth
                 margin='nomal' />
 
+            <TextField
+                label='비밀번호'
+                name='gb_pw'
+                value={formData.gb_pw}
+                onChange={handleChange}
+                fullWidth
+                margin='nomal' />
+
             <input type='file' onChange={handleFileChange} />
 
             <Button
@@ -113,7 +126,7 @@ function Page(props) {
                 color='primary' 
                 style={{marginTop:"20px"}} 
                 onClick={handleSubmit}
-                disabled={!isFormBVaild} // 로그인 상태와 폼 입력 상태 체크
+                disabled={!isFormVaild} // 로그인 상태와 폼 입력 상태 체크
             >저장</Button>
         </div>
     );

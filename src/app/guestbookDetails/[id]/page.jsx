@@ -10,10 +10,11 @@ import { useRouter } from 'next/navigation';
 
 function Page({ params }) {
     const LOCAL_API_BASE_URL = process.env.NEXT_PUBLIC_LOCAL_API_BASE_URL;
+    const LOCAL_IMG_URL = process.env.NEXT_PUBLIC_LOCAL_IMG_URL;
     const [item, setItem] = useState(null);       // 데이터 상태
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState(null);     // 에러 상태
-    const { isAuthenticated, token } = useAuthStore();       // 로그인 상태
+    const { isAuthenticated, token } = useAuthStore(); // 로그인 상태
     const router = useRouter();
 
     // 데이터를 비동기로 가져오기
@@ -58,7 +59,9 @@ function Page({ params }) {
         try {
             const response = await axios.get(API_URL, { // GetMapping으로 API_URL 접속? 무튼...
                 headers: {
-                    Authorization: `Bearer ${token}` // 로그인했을 때 삭제가 가능하니까 token 정보가 필요해서 헤더에 token 정보를 넣는다.
+                    // 로그인했을 때 삭제가 가능하니까 token 정보가 필요해서 헤더에 token 정보를 넣는다.
+                    // 무분별한 데이터 접근을 막기 위해 headers에 token을 추가하여 token 값이 있어야만 데이터 접근 가능
+                    Authorization: `Bearer ${token}`
                 }
             });
             if (response.data.success) {
@@ -110,7 +113,7 @@ function Page({ params }) {
                         </TableRow>
                         <TableRow>
                             <TableCell className="table-cell">CONTENT</TableCell>
-                            <TableCell className="table-cell">{item.gb_content}</TableCell>
+                            <TableCell className="table-cell"><pre>{item.gb_content}</pre></TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="table-cell">EMAIL</TableCell>
@@ -120,6 +123,34 @@ function Page({ params }) {
                             <TableCell className="table-cell">DATE</TableCell>
                             <TableCell className="table-cell">{item.gb_regdate.substring(0, 10)}</TableCell>
                         </TableRow>
+                        {/* 조건 렌더링 */}
+                        {item.gb_filename && (
+                        <TableRow>
+                            <TableCell className="table-cell">Image</TableCell>
+                            <TableCell className="table-cell">
+                                {isAuthenticated ? (
+                                    // 다운로드
+                                    <a
+                                        href={`${LOCAL_API_BASE_URL}/guestbook/download/${item.gb_filename}`} // 스프링부트 다운로드
+                                        download={item.gb_filename} // 다운로드 파일 이름 지정
+                                        target='_blank' // 새 탭에서 열림
+                                        rel='noopener noreferrer' // 보안 향상을 위해 추가
+                                    >
+                                        <img 
+                                            src={`${LOCAL_IMG_URL}/${item.gb_filename}`} 
+                                            alt="Upload Image" 
+                                            style={{width:"150px"}}
+                                        />
+                                    </a>) : (
+                                    <img 
+                                        src={`${LOCAL_IMG_URL}/${item.gb_filename}`} 
+                                        alt="Upload Image" 
+                                        style={{width:"150px"}}
+                                    />
+                                    )}
+                            </TableCell>
+                        </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
